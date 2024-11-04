@@ -30,9 +30,7 @@ jobs:
         FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
         FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
       run: |
-        ftp -inv $FTP_SERVER <<EOF
-        user $FTP_USERNAME $FTP_PASSWORD
-        cd /wwwroot
-        mput ./build/*
-        bye
-        EOF
+        for file in $(find ./build -type f); do
+          remote_path="/wwwroot/${file#./build/}"
+          curl -T "$file" -u $FTP_USERNAME:$FTP_PASSWORD "ftp://$FTP_SERVER/$remote_path"
+        done
