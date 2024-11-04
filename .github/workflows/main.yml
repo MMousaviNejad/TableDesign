@@ -24,11 +24,19 @@ jobs:
     - name: Build React App
       run: DISABLE_ESLINT_PLUGIN=true npm run build
       
-    - name: 📂 Sync files
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-      with:
-        server: site10882.siteasp.net
-        username: site10882
-        password: wC?73fN!F9=m
-        local-dir: /build/
-        server-dir: /wwwroot/
+    - name: FTP Uploader
+      # You may pin to the exact commit or the version.
+      # uses: zinh/ftp-uploader-action@10d256274547c8b84848edf454bfeb0b8a451c41
+      uses: zinh/ftp-uploader-action@v0.4
+      with: 
+          # Hostname of ftp server, eg: ftpHostname: ftp.test
+          ftpHostname: site10882.siteasp.net
+          # User of ftp account
+          ftpUsername: site10882
+          # Password of ftp account
+          ftpPassword: wC?73fN!F9=m
+          # Source folder
+          src: build/
+          # Destination folder
+          dest: wwwroot/
+          
