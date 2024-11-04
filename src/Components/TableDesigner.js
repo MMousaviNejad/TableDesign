@@ -28,7 +28,7 @@ const TableDesigner = () => {
                 "mouseup",
                 function (e) {
                   if (e.button === 2) {
-                    e.preventdefault()
+                    e.preventDefault()
                     setLines(lines.filter((item, _) => item !== line));
                     line.remove();
                   }
