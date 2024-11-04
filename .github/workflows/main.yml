@@ -30,4 +30,5 @@ jobs:
         server: site10882.siteasp.net
         username: site10882
         password: wC?73fN!F9=m
-        path: /wwwroot
+        local-dir: /build
+        server-dir: /wwwroot
