@@ -32,6 +32,6 @@ jobs:
       run: |
         lftp -c "
         open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER
-        mirror -R --delete ./build /path/to/ftp/directory
+        mirror -R --delete ./build /wwwroot
         bye
         "
