@@ -25,10 +25,12 @@ const TableDesigner = () => {
             document
               .querySelector("svg.leader-line:last-of-type")
               .addEventListener(
-                "dblclick",
-                function () {
-                  setLines(lines.filter((item, _) => item != line));
-                  line.remove();
+                "mouseup",
+                function (e) {
+                  if (e.button === 2) {
+                    setLines(lines.filter((item, _) => item != line));
+                    line.remove();
+                  }
                 },
                 false
               );
