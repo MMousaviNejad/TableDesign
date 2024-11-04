@@ -24,17 +24,15 @@ jobs:
     - name: Build React App
       run: DISABLE_ESLINT_PLUGIN=true npm run build
 
-    - name: Install lftp
-      run: sudo apt-get update && sudo apt-get install -y lftp
-
     - name: Upload to FTP
       env:
         FTP_SERVER: ${{ secrets.FTP_SERVER }}
         FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
         FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
       run: |
-        lftp -c "
-        open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER
-        mirror -R --delete ./build /wwwroot
+        ftp -inv $FTP_SERVER <<EOF
+        user $FTP_USERNAME $FTP_PASSWORD
+        cd /wwwroot
+        mput ./build/*
         bye
-        "
+        EOF
