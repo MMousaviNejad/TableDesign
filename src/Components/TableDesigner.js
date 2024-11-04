@@ -28,7 +28,7 @@ const TableDesigner = () => {
                 "mouseup",
                 function (e) {
                   if (e.button === 2) {
-                    setLines(lines.filter((item, _) => item != line));
+                    setLines(lines.filter((item, _) => item !== line));
                     line.remove();
                   }
                 },
@@ -57,7 +57,7 @@ const TableDesigner = () => {
   const handleChange = () => {
     for (var item of lines) {
       if (!item.start || !item.end) {
-        setLines(lines.filter((i, _) => i != item));
+        setLines(lines.filter((i, _) => i !== item));
         item.remove();
       } else {
         item.position();
