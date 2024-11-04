@@ -1,0 +1,37 @@
+name: Deploy React App to FTP
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build React App
+      run: DISABLE_ESLINT_PLUGIN=true npm run build
+
+    - name: Upload to FTP
+      env:
+        FTP_SERVER: ${{ secrets.FTP_SERVER }}
+        FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+        FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+      run: |
+        lftp -c "
+        open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER
+        mirror -R --delete ./build /wwwroot
+        bye
+        "
