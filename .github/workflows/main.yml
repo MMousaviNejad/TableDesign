@@ -23,14 +23,10 @@ jobs:
 
     - name: Build React App
       run: DISABLE_ESLINT_PLUGIN=true npm run build
-
-    - name: Upload to FTP
-      env:
-        FTP_SERVER: ${{ secrets.FTP_SERVER }}
-        FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-        FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-      run: |
-        for file in $(find ./build -type f); do
-          remote_path="/wwwroot/${file#./build/}"
-          curl -T "$file" -u $FTP_USERNAME:$FTP_PASSWORD "ftp://$FTP_SERVER/$remote_path"
-        done
+      
+    - name: 📂 Sync files
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
