@@ -7,6 +7,7 @@ const TableDesigner = () => {
   const [cards, setCards] = useState([]);
   const [relations, setRelations] = useState([]);
   const [lines, setLines] = useState([]);
+  const [name, setName] = useState("");
 
   const addCard = () => {
     const newCard = { id: Date.now(), title: "New Table", rows: [] };
@@ -25,13 +26,12 @@ const TableDesigner = () => {
             document
               .querySelector("svg.leader-line:last-of-type")
               .addEventListener(
-                "mouseup",
+                "contextmenu",
                 function (e) {
-                  if (e.button === 2) {
-                    e.preventDefault()
-                    setLines(lines.filter((item, _) => item !== line));
-                    line.remove();
-                  }
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setLines(lines.filter((item, _) => item !== line));
+                  line.remove();
                 },
                 false
               );
@@ -66,6 +66,27 @@ const TableDesigner = () => {
     }
   };
 
+  const saveTables = () => {
+    const userName = prompt("Enter a name for your tables:");
+    if (userName) {
+      localStorage.setItem(`tables_${userName}`, JSON.stringify(cards));
+      alert("Tables saved successfully!");
+    }
+  };
+
+  const loadTables = () => {
+    const userName = prompt("Enter the name to load tables:");
+    if (userName) {
+      const savedTables = localStorage.getItem(`tables_${userName}`);
+      if (savedTables) {
+        setCards(JSON.parse(savedTables));
+        alert("Tables loaded successfully!");
+      } else {
+        alert("No saved tables found with this name.");
+      }
+    }
+  };
+
   return (
     <div
       className="table-designer"
@@ -73,8 +94,9 @@ const TableDesigner = () => {
         width: "max-content",
       }}
     >
-      <button onClick={addCard}>Add Table</button>
-
+      <button className="btn btn-primary m-2" onClick={addCard}>Add Table</button>
+      <button className="btn btn-primary m-2" onClick={saveTables}>Save Tables</button>
+      <button className="btn btn-primary m-2" onClick={loadTables}>Load Tables</button>
       {cards.map((card, index) => (
         <Card
           relIds={(e) => setRelations([relations, ...e])}
@@ -82,6 +104,7 @@ const TableDesigner = () => {
           key={card.id}
           id={card.id}
           title={card.title}
+          rowsData = {card.rows}
           onTitleChange={updateCardTitle}
           onAddRow={addRowToCard}
           onChange={handleChange}

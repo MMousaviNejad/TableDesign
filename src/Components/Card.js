@@ -5,6 +5,7 @@ import Draggable from "react-draggable";
 const Card = ({
   id,
   title,
+  rowsData,
   relIds,
   onTitleChange,
   onAddRow,
@@ -19,6 +20,10 @@ const Card = ({
   const [newRowText, setNewRowText] = useState("");
   const [editingRowIndex, setEditingRowIndex] = useState(null);
   const cardBodyRef = useRef(null);
+
+  if (rowsData.length>0 && rowsData!==rows)
+    setRows(rowsData)
+
   useEffect(()=>{
       onChange()
   },[rows,inputTitle,showAddRow,editingRowIndex])
