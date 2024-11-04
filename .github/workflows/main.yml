@@ -35,9 +35,9 @@ jobs:
           # Ftp password
           password: wC?73fN!F9=m
           # The remote folder location of your FTP server
-          remote_folder: /wwwroot/
+          remote_folder: wwwroot/
           # The local folder location
-          local_folder: /build/
+          local_folder: build/
           # Remove existing files inside FTP remote folder
           cleanup: true
                   
