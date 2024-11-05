@@ -35,7 +35,7 @@ const TableDesigner = () => {
 
   const handleRemove = (index) => {
     setCards(cards.filter((_, i) => i !== index));
-    var card = cardsRef.current?.children[index]
+    var card = cardsRef.current?.children[index];
     for (var item of lines) {
       if (item.start.parentNode.parentNode === card || item.end === card) {
         setLines(lines.filter((i, _) => i !== item));
@@ -46,11 +46,18 @@ const TableDesigner = () => {
 
   const handleChange = () => {
     for (var item of lines) {
-      if (!item.start || !item.end) {
-        setLines(lines.filter((i, _) => i !== item));
-        item.remove();
-      } else {
-        item.position();
+      if (item) {
+        try {
+          if (!item.start.parentNode.parentNode || !item.end) {
+            setLines(lines.filter((i, _) => i !== item));
+            item.remove();
+          } else {
+            item.position();
+          }
+        } catch {
+          setLines(lines.filter((i, _) => i !== item));
+          item=null;
+        }
       }
     }
   };
@@ -81,8 +88,8 @@ const TableDesigner = () => {
     if (name) {
       const savedTables = localStorage.getItem(`tables_${name}`);
       if (savedTables) {
-        setRelations([])
-        setLines([])
+        setRelations([]);
+        setLines([]);
         setCards(JSON.parse(savedTables));
         alert("Tables loaded successfully!");
       } else {
@@ -92,7 +99,7 @@ const TableDesigner = () => {
   };
 
   const handleEndTitleEdit = (e, title) => {
-    var ls = lines
+    var ls = lines;
     for (var item of relations) {
       if (item.firstChild) {
         if (item.firstChild.textContent === title + "Id") {
@@ -111,23 +118,23 @@ const TableDesigner = () => {
                 },
                 false
               );
-            ls.push(line)
+            ls.push(line);
           }
         }
       }
     }
     setLines(ls);
-  }
+  };
 
   const handleRelation = (e) => {
-    var rels = relations
-    for(var item of e){
-      if (!rels.includes(item)){
-        rels.push(item)
+    var rels = relations;
+    for (var item of e) {
+      if (!rels.includes(item)) {
+        rels.push(item);
       }
     }
-    setRelations(rels)
-  }
+    setRelations(rels);
+  };
 
   return (
     <div
