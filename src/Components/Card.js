@@ -12,21 +12,30 @@ const Card = ({
   onDrag,
   onChange,
   onRemove,
+  transform,
+  editTitleEnd,
 }) => {
   const [rows, setRows] = useState([]);
+  const [position, setPosition] = useState(transform);
   const [relId, setRelId] = useState([]);
   const [inputTitle, setInputTitle] = useState(false);
   const [showAddRow, setShowAddRow] = useState(false);
   const [newRowText, setNewRowText] = useState("");
   const [editingRowIndex, setEditingRowIndex] = useState(null);
   const cardBodyRef = useRef(null);
+  const thisRef = useRef(null);
 
-  if (rowsData.length>0 && rowsData!==rows)
-    setRows(rowsData)
+  useEffect(() => {
+    if (transform != position) {
+      setPosition(transform);
+    }
+  }, [transform]);
 
-  useEffect(()=>{
-      onChange()
-  },[rows,inputTitle,showAddRow,editingRowIndex])
+  if (rowsData.length > 0 && rowsData !== rows) setRows(rowsData);
+
+  useEffect(() => {
+    onChange();
+  }, [rows, inputTitle, showAddRow, editingRowIndex]);
 
   const handleRowChange = (e, index) => {
     const updatedRows = [...rows];
@@ -38,6 +47,7 @@ const Card = ({
     if (e.code === "Enter") {
       setInputTitle(false);
       setShowAddRow(true);
+      editTitleEnd(thisRef.current, e.target.value);
     }
   };
 
@@ -48,28 +58,35 @@ const Card = ({
   };
 
   useEffect(() => {
-    var item =
-      cardBodyRef.current.children[cardBodyRef.current.children.length - 2];
-    if (item) {
-      var n = item.querySelector("span").textContent;
-      if (n.endsWith("Id") && n.length > 2) {
-        relId.push(item)
-        setRelId(relId);
-        relIds(relId);
+    var rels = []
+    for (var item of cardBodyRef.current.children) {
+      if (item) {
+        var n = item.querySelector("span")?.textContent;
+        if (!n) break
+        if (
+          n.endsWith("Id") &&
+          n.length > 2 &&
+          rels.findIndex((x) => x === item) === -1
+        ) {
+          rels.push(item)
+        }
       }
     }
-  }, [rows]);
+    relIds(rels)
+  }, [cardBodyRef.current?.children.length]);
 
   return (
     <Draggable
       onDrag={(e) => onDrag(e)}
+      defaultPosition={position}
       {...(inputTitle
         ? { cancel: ".card-header" }
         : { handle: ".card-header" })}
     >
       <div
+        ref={thisRef}
         className="card"
-        style={{ position: "absolute", width: "max-content", top: "100px" }}
+        style={{ position: "absolute", width: "max-content", top: "50px" }}
       >
         <div
           role="button"
@@ -80,7 +97,7 @@ const Card = ({
             <input
               autoFocus
               value={title}
-              onChange={(e) => onTitleChange(id, e.target.value,e.target.parentNode.parentNode)}
+              onChange={(e) => onTitleChange(id, e.target.value)}
               onKeyUp={(e) => handleTitleEnter(e)}
               onBlur={(e) => setInputTitle(false)}
               onFocus={(e) =>
