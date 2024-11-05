@@ -17,7 +17,6 @@ const Card = ({
 }) => {
   const [rows, setRows] = useState([]);
   const [position, setPosition] = useState(transform);
-  const [relId, setRelId] = useState([]);
   const [inputTitle, setInputTitle] = useState(false);
   const [showAddRow, setShowAddRow] = useState(false);
   const [newRowText, setNewRowText] = useState("");
@@ -31,7 +30,7 @@ const Card = ({
     }
   }, [transform]);
 
-  if (rowsData.length > 0 && rowsData !== rows) setRows(rowsData);
+  if (rowsData.length > 0 && rows.length == 0) setRows(rowsData);
 
   useEffect(() => {
     onChange();
