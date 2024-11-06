@@ -77,6 +77,6 @@
   color: #ad1717; /* تغییر رنگ در هنگام هاور */
 }
 
-line.leader-line-line-path{
+.leader-line-line-path{
   pointer-events: auto !important;
 }
