@@ -80,3 +80,13 @@
 .leader-line-line-path{
   pointer-events: auto !important;
 }
+
+.card-body{
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.card-body div{
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
