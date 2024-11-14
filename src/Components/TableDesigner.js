@@ -122,9 +122,22 @@ const TableDesigner = () => {
       if (lin){
         var ls = [];
         for(var item of JSON.parse(lin)){
-          ls.push(new LeaderLine(document.getElementById(item.start),
+          var line = new LeaderLine(document.getElementById(item.start),
                                   document.getElementById(item.end)
-                                  , { startPlug: "disc" }))
+                                  , { startPlug: "disc" })
+          document
+          .querySelector("svg.leader-line:last-of-type")
+          .addEventListener(
+            "contextmenu",
+            function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+              setLines(lines.filter((item, _) => item !== line));
+              line.remove();
+            },
+            false
+          );
+          ls.push(line)
         }
         setLines(ls)
       }
