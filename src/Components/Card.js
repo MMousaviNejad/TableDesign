@@ -37,8 +37,10 @@ const Card = ({
   }, [rows, inputTitle, showAddRow, editingRowIndex]);
 
   const handleRowChange = (e, index) => {
+    var rowTitle = e.target.value.replaceAll(" ", "_").trim();
+    rowTitle = rowTitle.startsWith("_") ? rowTitle.substr(1) : rowTitle;
     const updatedRows = [...rows];
-    updatedRows[index] = e.target.value;
+    updatedRows[index] = rowTitle;
     setRows(updatedRows);
   };
 
@@ -55,6 +57,7 @@ const Card = ({
     setNewRowText("");
     onAddRow(id, newRowText); // اطلاع دادن به والد
   };
+
 
   useEffect(() => {
     var rels = []
@@ -74,6 +77,12 @@ const Card = ({
     relIds(rels)
   }, [cardBodyRef.current?.children.length]);
 
+  const handleNewRowText = (e) => {
+    var rowTitle = e.target.value.replaceAll(" ", "_").trim();
+    rowTitle = rowTitle.startsWith("_") ? rowTitle.substr(1) : rowTitle;
+    setNewRowText(rowTitle)
+  }
+
   return (
     <Draggable
       onDrag={(e) => onDrag(e)}
@@ -83,6 +92,7 @@ const Card = ({
         : { handle: ".card-header" })}
     >
       <div
+        id={id}
         ref={thisRef}
         className="card"
         style={{ position: "absolute", width: "max-content", top: "50px" }}
@@ -127,7 +137,7 @@ const Card = ({
         </div>
         <div className="card-body" ref={cardBodyRef}>
           {rows.map((row, index) => (
-            <div key={index} onDoubleClick={() => setEditingRowIndex(index)}>
+            <div id={id + "_" + row} key={index} onDoubleClick={() => setEditingRowIndex(index)}>
               {editingRowIndex === index ? (
                 <input
                   value={row}
@@ -147,7 +157,7 @@ const Card = ({
             <input
               autoFocus
               value={newRowText}
-              onChange={(e) => setNewRowText(e.target.value)}
+              onChange={(e) => handleNewRowText(e)}
               onKeyDown={(e) => e.key === "Enter" && addRow()}
               onBlur={(e) => setShowAddRow(false)}
               placeholder="Add a row"

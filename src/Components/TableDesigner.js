@@ -2,17 +2,19 @@
 import React, { useState, useRef, useEffect } from "react";
 import Card from "./Card";
 import LeaderLine from "react-leader-line";
+import { useEdges } from "react-flow-renderer";
 
 const TableDesigner = () => {
   const cardsRef = useRef(null);
   const [cards, setCards] = useState([]);
   const [relations, setRelations] = useState([]);
   const [lines, setLines] = useState([]);
+  const [loading, setLoading] = useState(null);
 
   const addCard = () => {
     const newCard = {
       id: Date.now(),
-      title: "New Table",
+      title: "New_Table",
       rows: [],
       transform: { x: 0, y: 100 },
     };
@@ -78,25 +80,55 @@ const TableDesigner = () => {
         crd.push(item);
       }
       localStorage.setItem(`tables_${name}`, JSON.stringify(crd));
+      
+      var lin = [];
+      for(var item of lines){
+        lin.push({start: item.start.id, end: item.end.id})
+      }
+      localStorage.setItem(`lines_${name}`, JSON.stringify(lin));
+
       setCards(crd);
-      alert("Tables saved successfully!");
     }
   };
-
+  const getSavedNames = () => {
+    var names = []
+    for (var i=0;i<localStorage.length;i++){
+      var name = localStorage.key(i)
+      if (name.startsWith("tables_")){
+        names.push(name.substring(7))
+      }
+    }
+    return names
+  }
   const loadTables = () => {
-    const name = prompt("Enter the name to load tables:");
+    const names = getSavedNames();
+    const name = prompt("Available: " + names.join(",") + "\nEnter the name to load tables:");
     if (name) {
-      const savedTables = localStorage.getItem(`tables_${name}`);
-      if (savedTables) {
+      const tables = localStorage.getItem(`tables_${name}`);
+      if (tables) {
         setRelations([]);
-        setLines([]);
-        setCards(JSON.parse(savedTables));
-        alert("Tables loaded successfully!");
+        setLines([])
+        setCards(JSON.parse(tables));
+        setLoading(name)
       } else {
         alert("No saved tables found with this name.");
       }
     }
   };
+
+  useEffect(()=>{
+    if (loading !== null && cardsRef.current?.children?.length === cards.length && lines.length === 0){
+      const lin = localStorage.getItem(`lines_${loading}`);
+      if (lin){
+        var ls = [];
+        for(var item of JSON.parse(lin)){
+          ls.push(new LeaderLine(document.getElementById(item.start),
+                                  document.getElementById(item.end)))
+        }
+        setLines(ls)
+      }
+    }
+  },[cardsRef.current?.children?.length])
 
   const handleEndTitleEdit = (e, title) => {
     var ls = lines;
