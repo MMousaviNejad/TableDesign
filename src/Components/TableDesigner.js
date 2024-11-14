@@ -123,7 +123,8 @@ const TableDesigner = () => {
         var ls = [];
         for(var item of JSON.parse(lin)){
           ls.push(new LeaderLine(document.getElementById(item.start),
-                                  document.getElementById(item.end)))
+                                  document.getElementById(item.end)
+                                  , { startPlug: "disc" }))
         }
         setLines(ls)
       }
