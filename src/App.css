@@ -77,6 +77,6 @@
   color: #ad1717; /* تغییر رنگ در هنگام هاور */
 }
 
-svg.leader-line {
-  pointer-events: auto!important;
+.leader-line-line-path{
+  pointer-events: auto !important;
 }
