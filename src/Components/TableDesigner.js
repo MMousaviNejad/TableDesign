@@ -44,7 +44,7 @@ const TableDesigner = () => {
     var card = cardsRef.current?.children[index];
     for (var item of lines) {
       if (item.start.parentNode.parentNode === card || item.end === card) {
-        setLines(lines.filter((i, _) => i !== item));
+        setLines(prevLines => prevLines.filter((i, _) => i !== item));
         item.remove();
       }
     }
@@ -55,13 +55,13 @@ const TableDesigner = () => {
       if (item) {
         try {
           if (!item.start.parentNode.parentNode || !item.end) {
-            setLines(lines.filter((i, _) => i !== item));
+            setLines(prevLines => prevLines.filter((i, _) => i !== item));
             item.remove();
           } else {
             item.position();
           }
         } catch {
-          setLines(lines.filter((i, _) => i !== item));
+          setLines(prevLines => prevLines.filter((i, _) => i !== item));
           item = null;
         }
       }
@@ -197,7 +197,7 @@ const TableDesigner = () => {
                 function (e) {
                   e.preventDefault();
                   e.stopPropagation();
-                  setLines(lines.filter((item, _) => item !== line));
+                  setLines(prevLines => prevLines.filter((item, _) => item !== line));
                   line.remove();
                 },
                 false
